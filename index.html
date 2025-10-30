@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Reserve Wine — Send by WhatsApp</title>
+<style>
+  :root {
+    --maxw:720px;
+    --pad:18px;
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+  }
+  body {
+    margin:0;
+    background:#faf7f3;
+    color:#111;
+    display:flex;
+    align-items:center;
+    min-height:100vh;
+    padding:24px;
+  }
+  .card {
+    max-width:var(--maxw);
+    margin:0 auto;
+    background:#fff;
+    border-radius:12px;
+    box-shadow:0 8px 30px rgba(0,0,0,.08);
+    padding:var(--pad);
+  }
+  h1 {
+    margin:0 0 6px;
+    font-size:1.4rem;
+  }
+  p.lead {
+    margin:0 0 18px;
+    color:#444;
+  }
+  .wines {
+    display:grid;
+    gap:8px;
+    margin-bottom:12px;
+  }
+  .wine {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px;
+    border-radius:8px;
+    border:1px solid #eee;
+  }
+  label {
+    flex:1;
+    cursor:pointer;
+  }
+  .controls {
+    display:grid;
+    gap:10px;
+    margin-bottom:12px;
+  }
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  textarea {
+    width:100%;
+    padding:10px;
+    border-radius:8px;
+    border:1px solid #e6e2dd;
+    font-size:0.95rem;
+  }
+  .row {
+    display:flex;
+    gap:8px;
+  }
+  .small {
+    font-size:0.85rem;
+    color:#666;
+  }
+  button {
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:12px 14px;
+    border-radius:10px;
+    border:0;
+    background:#1ebc6e;
+    color:#fff;
+    font-weight:600;
+    cursor:pointer;
+    font-size:1rem;
+  }
+  .note {
+    margin-top:10px;
+    font-size:0.85rem;
+    color:#666;
+  }
+  footer {
+    margin-top:14px;
+    font-size:0.82rem;
+    color:#999;
+    text-align:center;
+  }
+  @media (max-width:480px) {
+    body {padding:12px;}
+    .card {padding:14px;}
+  }
+
+  /* 👇 Small wine photos */
+  .wine-photo {
+    width:50px;
+    height:50px;
+    object-fit:cover;
+    border-radius:6px;
+    flex-shrink:0;
+    border:1px solid #ddd;
+  }
+
+  /* 👇 Quantity input */
+  .qty {
+    width:60px;
+    padding:6px;
+    border:1px solid #ddd;
+    border-radius:6px;
+    font-size:0.9rem;
+  }
+</style>
+</head>
+<body>
+  <main class="card" role="main">
+    <h1>Reserve bottles — quick WhatsApp order</h1>
+    <p class="lead">
+      Choose up to two wines, set quantities, enter your contact, and press <strong>Send to WhatsApp</strong>.
+    </p>
+
+    <form id="orderForm" onsubmit="handleSubmit(event)">
+      <div class="wines" id="winesList">
+
+        <div class="wine">
+          <img src="36500.jpg" alt="Joven Páramo Arroyo 2021" class="wine-photo">
+          <input type="checkbox" id="wine1" name="wines" value="Joven Páramo Arroyo 2021">
+          <label for="wine1">
+            <strong>Joven Páramo Arroyo 2021</strong>
+            <div class="small">classic young Ribera with some blackberry, lots of dark chocolate and the classic deep, berry fruitiness</div>
+          </label>
+          <input type="number" id="qty1" name="qty1" class="qty" value="1" min="1" max="12">
+        </div>
+
+        <div class="wine">
+          <img src="36520.jpg" alt="Crianza Páramo Arroyo 2020" class="wine-photo">
+          <input type="checkbox" id="wine2" name="wines" value="Crianza Páramo Arroyo 2020">
+          <label for="wine2">
+            <strong>Crianza Páramo Arroyo 2020</strong>
+            <div class="small">Intense, cherry-red color, very elegant and complex on the nose. Red fruits dominate the palate, along with sharp notes.</div>
+          </label>
+          <input type="number" id="qty2" name="qty2" class="qty" value="1" min="1" max="12">
+        </div>
+
+       
+      </div>
+
+      <div class="controls">
+        <input type="text" id="name" placeholder="Your name" required>
+        <input type="email" id="email" placeholder="Email (optional)">
+        <input type="tel" id="phone" placeholder="WhatsApp number (optional, international e.g. 49170... )">
+        <textarea id="notes" placeholder="Notes (optional) — e.g. delivery date or pick-up"></textarea>
+      </div>
+
+      <div class="row">
+        <button type="submit" id="whatsappBtn">📩 Send to WhatsApp</button>
+        <button type="button" onclick="copyMessage()" id="copyBtn" style="background:#4b5563">Copy message</button>
+      </div>
+
+      <p class="note">By sending, you'll open WhatsApp. The order will be sent as a normal message to your set number.</p>
+    </form>
+
+    <footer>
+      Edit bottles or details directly in this file. Replace the phone number in the script before publishing.
+    </footer>
+  </main>
+
+<script>
+/* Replace this number with YOUR WhatsApp number in international format (no + or spaces) */
+const PHONE_FOR_WHATSAPP = "49015208234844";
+
+/* Get selected wines with quantities */
+function getSelectedWines() {
+  const boxes = Array.from(document.querySelectorAll('input[name="wines"]:checked'));
+  return boxes.map(b => {
+    const qtyInput = document.querySelector(`#qty${b.id.replace('wine', '')}`);
+    const qty = qtyInput ? qtyInput.value : 1;
+    return `${b.value} - ${qty} bottle${qty > 1 ? 's' : ''}`;
+  });
+}
+
+/* Build message text */
+function buildMessage(name, email, phone, wines, notes) {
+  const lines = [];
+  lines.push("🍷 New wine reservation 🍷");
+  lines.push("");
+  if (name) lines.push("Name: " + name);
+  if (email) lines.push("Email: " + email);
+  if (phone) lines.push("Customer WhatsApp: " + phone);
+  lines.push("");
+  if (wines.length) {
+    lines.push("Bottles:");
+    wines.forEach((w,i) => lines.push((i+1) + ". " + w));
+  } else {
+    lines.push("Bottles: (none selected)");
+  }
+  if (notes) {
+    lines.push("");
+    lines.push("Notes: " + notes);
+  }
+  lines.push("");
+  lines.push("Please confirm availability and delivery/pickup details.");
+  return lines.join("\n");
+}
+
+/* Open WhatsApp */
+function openWhatsAppWithMessage(message) {
+  const encoded = encodeURIComponent(message);
+  const url = `https://wa.me/${PHONE_FOR_WHATSAPP}?text=${encoded}`;
+  window.open(url, "_blank");
+}
+
+/* Handle form submission */
+function handleSubmit(e) {
+  e.preventDefault();
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const notes = document.getElementById("notes").value.trim();
+  const wines = getSelectedWines();
+
+  if (wines.length === 0) {
+    if (!confirm("You haven't selected any bottles. Continue anyway?")) return;
+  } else if (wines.length > 3) {
+    alert("Please select up to 3 bottles.");
+    return;
+  }
+
+  const msg = buildMessage(name, email, phone, wines, notes);
+  openWhatsAppWithMessage(msg);
+}
+
+/* Copy message manually */
+function copyMessage() {
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const notes = document.getElementById("notes").value.trim();
+  const wines = getSelectedWines();
+  const msg = buildMessage(name, email, phone, wines, notes);
+  navigator.clipboard && navigator.clipboard.writeText(msg)
+    .then(()=> alert("Message copied — paste it in WhatsApp."))
+    .catch(()=> alert("Copy failed — your browser may block clipboard access. Try using the Send to WhatsApp button."));
+}
+</script>
+</body>
+</html>
