@@ -128,7 +128,7 @@
   <main class="card" role="main">
     <h1>Reserve bottles — quick WhatsApp order</h1>
     <p class="lead">
-      Choose up to two wines, set quantities, enter your contact, and press <strong>Send to WhatsApp</strong>.
+      Choose up to two wines, set quantities, enter your contact, pick-up date, and press <strong>Send to WhatsApp</strong>.
     </p>
 
     <form id="orderForm" onsubmit="handleSubmit(event)">
@@ -161,7 +161,7 @@
         <input type="text" id="name" placeholder="Your name" required>
         <input type="email" id="email" placeholder="Email (optional)">
         <input type="tel" id="phone" placeholder="WhatsApp number (optional, international e.g. 49170... )">
-        <textarea id="notes" placeholder="Notes (optional) — e.g. delivery date or pick-up"></textarea>
+        <textarea id="notes" placeholder="Notes — e.g. ideal pick-up dates"></textarea>
       </div>
 
       <div class="row">
@@ -211,7 +211,7 @@ function buildMessage(name, email, phone, wines, notes) {
     lines.push("Notes: " + notes);
   }
   lines.push("");
-  lines.push("Please confirm availability and delivery/pickup details.");
+  lines.push("Please write ideal pickup details (day, timeframe) in Munich or if you need a special delivery.");
   return lines.join("\n");
 }
 
@@ -232,9 +232,9 @@ function handleSubmit(e) {
   const wines = getSelectedWines();
 
   if (wines.length === 0) {
-    if (!confirm("You haven't selected any bottles. Continue anyway?")) return;
-  } else if (wines.length > 3) {
-    alert("Please select up to 3 bottles.");
+    if (!confirm("You haven't selected any bottle. Continue anyway?")) return;
+  } else if (wines.length > 100) {
+    alert("Are you sure you want so many?.");
     return;
   }
 
@@ -257,3 +257,4 @@ function copyMessage() {
 </script>
 </body>
 </html>
+
