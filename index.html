@@ -160,7 +160,7 @@
             <strong>Joven Páramo Arroyo 2023</strong>
             <div class="small">Classic young Ribera with some blackberry, lots of dark chocolate and the classic deep, berry fruitiness</div>
           </label>
-          <input type="number" id="qty1" name="qty1" class="qty" value="1" min="1" max="12">
+          <input type="number" id="qty1" name="qty1" class="qty" value="1" min="0" max="12">
         </div>
 
         <div class="wine">
@@ -170,7 +170,7 @@
             <strong>Crianza Páramo Arroyo 2020</strong>
             <div class="small">Intense, cherry-red color, very elegant and complex on the nose. Red fruits dominate the palate, along with sharp notes.</div>
           </label>
-          <input type="number" id="qty2" name="qty2" class="qty" value="1" min="1" max="12">
+          <input type="number" id="qty2" name="qty2" class="qty" value="1" min="0" max="12">
         </div>
 
       </div>
@@ -187,7 +187,7 @@
           <span class="placeholder-text">Pick-up date</span>
         </div>
 
-        <textarea id="notes" placeholder="Notes — e.g. anything related to pick.up timeframe, alternative dates, etc."></textarea>
+        <textarea id="notes" placeholder="Notes — e.g. pick-up timeframe, alternative dates, ..."></textarea>
       </div>
 
       <div class="row">
@@ -206,13 +206,13 @@
 /* Replace this number with YOUR WhatsApp number in international format (no + or spaces) */
 const PHONE_FOR_WHATSAPP = "49015208234844";
 
-/* Get selected wines with quantities */
+/* Get selected wines with quantities (allow 0) */
 function getSelectedWines() {
   const boxes = Array.from(document.querySelectorAll('input[name="wines"]:checked'));
   return boxes.map(b => {
     const qtyInput = document.querySelector(`#qty${b.id.replace('wine', '')}`);
-    const qty = qtyInput ? qtyInput.value : 1;
-    return `${b.value} - ${qty} bottle${qty > 1 ? 's' : ''}`;
+    const qty = qtyInput ? parseInt(qtyInput.value) || 0 : 0;
+    return `${b.value} - ${qty} bottle${qty === 1 ? '' : 's'}`;
   });
 }
 
@@ -264,7 +264,7 @@ function handleSubmit(e) {
   if (wines.length === 0) {
     if (!confirm("You haven't selected any bottle. Continue anyway?")) return;
   } else if (wines.length > 100) {
-    alert("Are you sure you want so many?.");
+    alert("Are you sure you want so many?");
     return;
   }
 
@@ -288,5 +288,3 @@ function copyMessage() {
 </script>
 </body>
 </html>
-
-
