@@ -221,7 +221,7 @@ function getSelectedWines() {
       return { name: b.value, qty };
     })
     .filter(w => w.qty > 0)
-    .map(w => sanitizeForWhatsApp(`${w.name} - ${w.qty} bottle${w.qty === 1 ? '' : 's'}`));
+    .map(w => sanitizeForWhatsApp(`${w.name} --> ${w.qty} bottle${w.qty === 1 ? '' : 's'}`));
 }
 
 /* Build message text */
@@ -309,3 +309,4 @@ document.getElementById('orderForm').addEventListener('submit', handleSubmit);
 </script>
 </body>
 </html>
+
