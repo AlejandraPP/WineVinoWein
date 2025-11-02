@@ -60,6 +60,7 @@
   input[type="text"],
   input[type="email"],
   input[type="tel"],
+  input[type="date"],
   textarea {
     width:100%;
     padding:10px;
@@ -154,13 +155,13 @@
           <input type="number" id="qty2" name="qty2" class="qty" value="1" min="1" max="12">
         </div>
 
-       
       </div>
 
       <div class="controls">
         <input type="text" id="name" placeholder="Your name" required>
         <input type="email" id="email" placeholder="Email (optional)">
         <input type="tel" id="phone" placeholder="WhatsApp number (optional, international e.g. 49170... )">
+        <input type="date" id="pickupDate" placeholder="Pick-up date">
         <textarea id="notes" placeholder="Notes — e.g. ideal pick-up dates"></textarea>
       </div>
 
@@ -169,7 +170,7 @@
         <button type="button" onclick="copyMessage()" id="copyBtn" style="background:#4b5563">Copy message</button>
       </div>
 
-      <p class="note">By sending, you'll open WhatsApp. The order will be sent as a normal message to your set number.</p>
+      <p class="note">By sending, you'll open WhatsApp. The order will be sent as a normal message to Alex's number.</p>
     </form>
 
     <footer>
@@ -192,7 +193,7 @@ function getSelectedWines() {
 }
 
 /* Build message text */
-function buildMessage(name, email, phone, wines, notes) {
+function buildMessage(name, email, phone, wines, notes, pickupDate) {
   const lines = [];
   lines.push("🍷 New wine reservation 🍷");
   lines.push("");
@@ -205,6 +206,10 @@ function buildMessage(name, email, phone, wines, notes) {
     wines.forEach((w,i) => lines.push((i+1) + ". " + w));
   } else {
     lines.push("Bottles: (none selected)");
+  }
+  if (pickupDate) {
+    lines.push("");
+    lines.push("Pick-up date: " + pickupDate);
   }
   if (notes) {
     lines.push("");
@@ -228,6 +233,7 @@ function handleSubmit(e) {
   const name = document.getElementById("name").value.trim();
   const email = document.getElementById("email").value.trim();
   const phone = document.getElementById("phone").value.trim();
+  const pickupDate = document.getElementById("pickupDate").value;
   const notes = document.getElementById("notes").value.trim();
   const wines = getSelectedWines();
 
@@ -238,7 +244,7 @@ function handleSubmit(e) {
     return;
   }
 
-  const msg = buildMessage(name, email, phone, wines, notes);
+  const msg = buildMessage(name, email, phone, wines, notes, pickupDate);
   openWhatsAppWithMessage(msg);
 }
 
@@ -247,9 +253,10 @@ function copyMessage() {
   const name = document.getElementById("name").value.trim();
   const email = document.getElementById("email").value.trim();
   const phone = document.getElementById("phone").value.trim();
+  const pickupDate = document.getElementById("pickupDate").value;
   const notes = document.getElementById("notes").value.trim();
   const wines = getSelectedWines();
-  const msg = buildMessage(name, email, phone, wines, notes);
+  const msg = buildMessage(name, email, phone, wines, notes, pickupDate);
   navigator.clipboard && navigator.clipboard.writeText(msg)
     .then(()=> alert("Message copied — paste it in WhatsApp."))
     .catch(()=> alert("Copy failed — your browser may block clipboard access. Try using the Send to WhatsApp button."));
@@ -257,6 +264,3 @@ function copyMessage() {
 </script>
 </body>
 </html>
-
-
-
