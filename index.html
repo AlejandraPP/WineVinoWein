@@ -206,15 +206,19 @@
 /* Replace this number with YOUR WhatsApp number in international format (no + or spaces) */
 const PHONE_FOR_WHATSAPP = "49015208234844";
 
-/* Get selected wines with quantities (allow 0) */
+/* Get selected wines with quantities > 0 */
 function getSelectedWines() {
-  const boxes = Array.from(document.querySelectorAll('input[name="wines"]:checked'));
-  return boxes.map(b => {
-    const qtyInput = document.querySelector(`#qty${b.id.replace('wine', '')}`);
-    const qty = qtyInput ? parseInt(qtyInput.value) || 0 : 0;
-    return sanitizeForWhatsApp(`${b.value} - ${qty} bottle${qty === 1 ? '' : 's'}`);
-  });
+  const boxes = Array.from(document.querySelectorAll('input[name="wines"]'));
+  return boxes
+    .map(b => {
+      const qtyInput = document.querySelector(`#qty${b.id.replace('wine', '')}`);
+      const qty = qtyInput ? parseInt(qtyInput.value) || 0 : 0;
+      return { name: b.value, qty };
+    })
+    .filter(w => w.qty > 0) // only include wines with qty > 0
+    .map(w => sanitizeForWhatsApp(`${w.name} - ${w.qty} bottle${w.qty === 1 ? '' : 's'}`));
 }
+
 
 /* Build message text */
 function buildMessage(name, email, phone, wines, notes, pickupDate) {
@@ -288,5 +292,6 @@ function copyMessage() {
 </script>
 </body>
 </html>
+
 
 
