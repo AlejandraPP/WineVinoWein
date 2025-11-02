@@ -229,6 +229,7 @@ function buildMessage(name, email, phone, wines, notes, pickupDate) {
   const lines = [];
   lines.push("🍷 New wine reservation 🍷");
   lines.push("");
+  lines.push("Thank you very much for ordering my family's wine! 💜 Please, let me know if any detail changes or if you need a special delivery.");
   if (name) lines.push("Name: " + name);
   if (email) lines.push("Email: " + email);
   if (phone) lines.push("Phone number: " + phone);
@@ -247,8 +248,9 @@ function buildMessage(name, email, phone, wines, notes, pickupDate) {
     lines.push("");
     lines.push("Notes: " + notes);
   }
-  lines.push("");
-  lines.push("Thank you very much for ordering my family's wine! 💜 Please, let me know if any detail changes or if you need a special delivery.");
+    lines.push("");
+  
+
   return lines.join("\n");
 }
 
@@ -309,4 +311,5 @@ document.getElementById('orderForm').addEventListener('submit', handleSubmit);
 </script>
 </body>
 </html>
+
 
