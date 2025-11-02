@@ -223,7 +223,7 @@ function buildMessage(name, email, phone, wines, notes, pickupDate) {
   lines.push("");
   if (name) lines.push("Name: " + name);
   if (email) lines.push("Email: " + email);
-  if (phone) lines.push("Customer WhatsApp: " + phone);
+  if (phone) lines.push("Phone number: " + phone);
   lines.push("");
   if (wines.length) {
     lines.push("Bottles:");
@@ -233,14 +233,14 @@ function buildMessage(name, email, phone, wines, notes, pickupDate) {
   }
   if (pickupDate) {
     lines.push("");
-    lines.push("Select an ideal pick-up date: " + pickupDate);
+    lines.push("Selected ideal pick-up date: " + pickupDate);
   }
   if (notes) {
     lines.push("");
     lines.push("Notes: " + notes);
   }
   lines.push("");
-  lines.push("Please enter the ideal pickup details (incl timeframe) in Munich or if you need a special delivery.");
+  lines.push("Thank you very much for ordering my family's wine! 💜 Please, let me know if any detail changes or if you need a special delivery.");
   return lines.join("\n");
 }
 
