@@ -212,7 +212,7 @@ function getSelectedWines() {
   return boxes.map(b => {
     const qtyInput = document.querySelector(`#qty${b.id.replace('wine', '')}`);
     const qty = qtyInput ? parseInt(qtyInput.value) || 0 : 0;
-    return `${b.value} - ${qty} bottle${qty === 1 ? '' : 's'}`;
+    return sanitizeForWhatsApp(`${b.value} - ${qty} bottle${qty === 1 ? '' : 's'}`);
   });
 }
 
@@ -233,7 +233,7 @@ function buildMessage(name, email, phone, wines, notes, pickupDate) {
   }
   if (pickupDate) {
     lines.push("");
-    lines.push("Selected ideal pick-up date: " + pickupDate);
+    lines.push("Selected ideal pick-up date: " + sanitizeForWhatsApp(pickupDate));
   }
   if (notes) {
     lines.push("");
@@ -288,3 +288,4 @@ function copyMessage() {
 </script>
 </body>
 </html>
+
