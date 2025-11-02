@@ -123,13 +123,31 @@
     border-radius:6px;
     font-size:0.9rem;
   }
+
+  /* 👇 Fake placeholder for date input */
+  .date-wrapper {
+    position: relative;
+  }
+  .date-wrapper .placeholder-text {
+    position: absolute;
+    left: 12px;
+    top: 10px;
+    color: #999;
+    pointer-events: none;
+    font-size: 0.95rem;
+    transition: 0.2s ease;
+  }
+  .date-wrapper input[type="date"]:focus + .placeholder-text,
+  .date-wrapper input[type="date"]:valid + .placeholder-text {
+    opacity: 0;
+  }
 </style>
 </head>
 <body>
   <main class="card" role="main">
-    <h1>Reserve wine — quick WhatsApp order</h1>
+    <h1>🍇 Reserve wine bottles — quick WhatsApp order 🍷</h1>
     <p class="lead">
-      Choose up to two wines, set quantities, enter your contact, pick-up date, and press <strong>Send to WhatsApp</strong>.
+      Choose up to two wines, set quantities, enter your contact, ideal pick-up date, and press <strong>Send to WhatsApp</strong>.
     </p>
 
     <form id="orderForm" onsubmit="handleSubmit(event)">
@@ -161,7 +179,13 @@
         <input type="text" id="name" placeholder="Your name" required>
         <input type="email" id="email" placeholder="Email (optional)">
         <input type="tel" id="phone" placeholder="WhatsApp number (optional, international e.g. 49170... )">
-        <input type="date" id="pickupDate" placeholder="Pick-up date">
+
+        <!-- 👇 Date picker with visual placeholder -->
+        <div class="date-wrapper">
+          <input type="date" id="pickupDate" required>
+          <span class="placeholder-text">Pick-up date</span>
+        </div>
+
         <textarea id="notes" placeholder="Notes — e.g. ideal pick-up dates"></textarea>
       </div>
 
@@ -170,11 +194,11 @@
         <button type="button" onclick="copyMessage()" id="copyBtn" style="background:#4b5563">Copy message</button>
       </div>
 
-      <p class="note">By sending, you'll open WhatsApp. The order will be sent as a normal message to Alex's number.</p>
+      <p class="note">Location of pick-up is Kazmairstr. 21, München.</p>
     </form>
 
     <footer>
-      Edit bottles or details directly in this file. Location of pick-up is Kazmairstr. 21, München.
+      By sending, you'll open WhatsApp. The order will be sent as a normal message to Alex's number. Edit bottles or details directly in the above-section. 
     </footer>
   </main>
 
@@ -209,14 +233,14 @@ function buildMessage(name, email, phone, wines, notes, pickupDate) {
   }
   if (pickupDate) {
     lines.push("");
-    lines.push("Pick-up date: " + pickupDate);
+    lines.push("Select an ideal pick-up date: " + pickupDate);
   }
   if (notes) {
     lines.push("");
     lines.push("Notes: " + notes);
   }
   lines.push("");
-  lines.push("Please write ideal pickup details (day, timeframe) in Munich or if you need a special delivery.");
+  lines.push("Please enter the ideal pickup details (incl timeframe) in Munich or if you need a special delivery.");
   return lines.join("\n");
 }
 
@@ -264,4 +288,3 @@ function copyMessage() {
 </script>
 </body>
 </html>
-
