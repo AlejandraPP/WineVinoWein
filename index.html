@@ -105,7 +105,7 @@
     .card {padding:14px;}
   }
 
-  /* 👇 Small wine photos */
+  /* Small wine photos */
   .wine-photo {
     width:50px;
     height:50px;
@@ -115,7 +115,7 @@
     border:1px solid #ddd;
   }
 
-  /* 👇 Quantity input */
+  /* Quantity input */
   .qty {
     width:60px;
     padding:6px;
@@ -124,7 +124,7 @@
     font-size:0.9rem;
   }
 
-  /* 👇 Fake placeholder for date input */
+  /* Fake placeholder for date input */
   .date-wrapper {
     position: relative;
   }
@@ -150,7 +150,7 @@
       Choose up to two wines, set quantities, enter your contact, ideal pick-up date, and press <strong>Send to WhatsApp</strong>.
     </p>
 
-    <form id="orderForm" onsubmit="handleSubmit(event)">
+    <form id="orderForm">
       <div class="wines" id="winesList">
 
         <div class="wine">
@@ -179,9 +179,9 @@
         <input type="text" id="name" placeholder="Your name" required>
         <input type="email" id="email" placeholder="Email (optional)">
         <input type="tel" id="phone" placeholder="WhatsApp number (optional, international e.g. 49170... )">
-      <p class="note">Location of pick-up is Kazmairstr. 21, München.</p>
+        <p class="note">Location of pick-up is Kazmairstr. 21, München.</p>
 
-        <!-- 👇 Date picker with visual placeholder -->
+        <!-- Date picker with visual placeholder -->
         <div class="date-wrapper">
           <input type="date" id="pickupDate" required>
           <span class="placeholder-text">Pick-up date</span>
@@ -206,6 +206,11 @@
 /* Replace this number with YOUR WhatsApp number in international format (no + or spaces) */
 const PHONE_FOR_WHATSAPP = "49015208234844";
 
+/* Sanitize text for WhatsApp */
+function sanitizeForWhatsApp(text) {
+  return text.replace(/[\n\r]+/g, "\n");
+}
+
 /* Get selected wines with quantities > 0 */
 function getSelectedWines() {
   const boxes = Array.from(document.querySelectorAll('input[name="wines"]'));
@@ -215,10 +220,9 @@ function getSelectedWines() {
       const qty = qtyInput ? parseInt(qtyInput.value) || 0 : 0;
       return { name: b.value, qty };
     })
-    .filter(w => w.qty > 0) // only include wines with qty > 0
+    .filter(w => w.qty > 0)
     .map(w => sanitizeForWhatsApp(`${w.name} - ${w.qty} bottle${w.qty === 1 ? '' : 's'}`));
 }
-
 
 /* Build message text */
 function buildMessage(name, email, phone, wines, notes, pickupDate) {
@@ -289,9 +293,19 @@ function copyMessage() {
     .then(()=> alert("Message copied — paste it in WhatsApp."))
     .catch(()=> alert("Copy failed — your browser may block clipboard access. Try using the Send to WhatsApp button."));
 }
+
+/* Auto-tick checkbox when quantity > 0 */
+document.querySelectorAll('.qty').forEach(qtyInput => {
+  qtyInput.addEventListener('input', () => {
+    const wineId = qtyInput.id.replace('qty', 'wine');
+    const checkbox = document.getElementById(wineId);
+    checkbox.checked = qtyInput.value > 0;
+  });
+});
+
+/* Bind form submit reliably */
+document.getElementById('orderForm').addEventListener('submit', handleSubmit);
+
 </script>
 </body>
 </html>
-
-
-
